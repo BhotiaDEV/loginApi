@@ -51,20 +51,34 @@ router.post('/register',(req,res)=>{
     
 })
 
-// login user
- router.post('/login',(req,res)=>{
-    User.findOne({email:req.body.email},(err,user)=>{
-        if(err) return res.send({auth:false, token:"Error while logging"})
-        if(!user) return res.send({auth:false,token:"No User Found!"})
+router.post('/login',(req,res) => {
+    User.findOne({email:req.body.email},(err,user) => {
+        if(err) return res.send({auth:false,token:'Error while Logging'});
+        if(!user) return res.send({auth:false,token:'No User Found'});
         else{
-            let passisvalid = bcrypt.compareSync(req.body.password,user.password)
-            if(!passisvalid) return res.send({auth:false,token:"Wrong password!"})
-            
-            let token = jwt.sync({id:user._id},config.secret,{expiresIn:84600}) //24hrs
+            const passIsValid = bcrypt.compareSync(req.body.password,user.password)
+            if(!passIsValid) return res.send({auth:false,token:'Invalid Password'})
+            // in case both valid
+            let token = jwt.sign({id:user._id},config.secret,{expiresIn:86400})//24 hr
             res.send({auth:true,token:token})
         }
     })
- })
+})
+
+// login user
+//  router.post('/login',(req,res)=>{
+//     User.findOne({email:req.body.email},(err,user)=>{
+//         if(err) return res.send({auth:false, token:"Error while logging"})
+//         if(!user) return res.send({auth:false,token:"No User Found!"})
+//         else{
+//             let passisvalid = bcrypt.compareSync(req.body.password,user.password)
+//             if(!passisvalid) return res.send({auth:false,token:"Wrong password!"})
+            
+//             let token = jwt.sync({id:user._id},config.secret,{expiresIn:84600}) //24hrs
+//             res.send({auth:true,token:token})
+//         }
+//     })
+//  })
 
 //  user info 
 router.post('/userInfo',(req,res)=>{
