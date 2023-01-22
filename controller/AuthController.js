@@ -81,14 +81,25 @@ router.post('/login',(req,res) => {
 //  })
 
 //  user info 
-router.post('/userInfo',(req,res)=>{
-    let token = req.headers['x-access-token'];
-    if(!token) return res.send({auth:false,token:'No Token Provided!'});
+// router.post('/userInfo',(req,res)=>{
+//     let token = req.headers['x-access-token'];
+//     if(!token) return res.send({auth:false,token:'No Token Provided!'});
 
-    jwt.verify(token,config.secret,(err,user)=>{
-        if(err) return res.send({auth:false,token:'Invalid Token'})
-        User.findById(user.id,(err,result)=>{
-            res.send(result) 
+//     jwt.verify(token,config.secret,(err,user) => {
+//         if(err) return res.send({auth:false,token:'Invalid Token'});
+//         User.findById(user.id,(err,result)=>{
+//             res.send(result) 
+//         })
+//     })
+// })
+router.get('/userInfo',(req,res) => {
+    let token = req.headers['x-access-token'];
+    if(!token) res.send({auth:false,token:'No Token Provided'});
+    //jwt verify
+    jwt.verify(token,config.secret,(err,user) => {
+        if(err) return res.send({auth:false,token:'Invalid Token'});
+        User.findById(user.id,(err,result) => {
+            res.send(result)
         })
     })
 })
